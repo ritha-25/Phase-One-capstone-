@@ -15,7 +15,7 @@ import java.util.Optional;
 import java.util.Scanner;
 import java.util.UUID;
 
-public class ConsoleApp {
+public class git ConsoleApp {
 
     private static final Scanner            scanner            = new Scanner(System.in);
     private static final UserDAO            userDAO            = new UserDAO();
