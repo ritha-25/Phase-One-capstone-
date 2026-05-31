@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="org.atm.igiresystem.lab3.ui.controllers.SavingsController"
+      stylesheets="@styles.css"
+      spacing="20">
+
+    <HBox style="-fx-background-color:#FEF3C7;-fx-background-radius:10;-fx-padding:14 18;" spacing="10" alignment="CENTER_LEFT">
+        <Label text="⚠" style="-fx-font-size:16px;"/>
+        <VBox spacing="2">
+            <Label text="IgirePay Savings" style="-fx-font-weight:bold;-fx-text-fill:#92400E;-fx-font-size:13px;"/>
+            <Label text="Savings work like MoKash. Transfer from your Main Wallet to save. Withdrawals return to your wallet."
+                   style="-fx-text-fill:#92400E;-fx-font-size:11px;" wrapText="true"/>
+        </VBox>
+    </HBox>
+
+    <VBox styleClass="balance-card" spacing="6" maxWidth="480">
+        <Label text="SAVINGS BALANCE" styleClass="balance-card-label"/>
+        <Label fx:id="balanceLabel" text="0.00 RWF" styleClass="balance-card-amount"/>
+        <Label fx:id="accountInfoLabel" text="" styleClass="balance-card-name"/>
+    </VBox>
+
+    <VBox styleClass="card" spacing="16" maxWidth="480">
+        <VBox spacing="6">
+            <Label text="SELECT SAVINGS ACCOUNT" styleClass="lbl-field"/>
+            <ComboBox fx:id="accountCombo" promptText="Choose savings account" maxWidth="Infinity"
+                      style="-fx-font-size:14px;" onAction="#onAccountSelected"/>
+        </VBox>
+
+        <Separator/>
+
+        <VBox spacing="6">
+            <Label text="AMOUNT (RWF)" styleClass="lbl-field"/>
+            <TextField fx:id="amountField" promptText="e.g. 50,000" styleClass="input-field"/>
+        </VBox>
+
+        <VBox spacing="6">
+            <Label text="PIN" styleClass="lbl-field"/>
+            <PasswordField fx:id="pinField" promptText="Enter your PIN" styleClass="input-field"/>
+        </VBox>
+
+        <Label fx:id="messageLabel" styleClass="lbl-error" wrapText="true"/>
+
+        <HBox spacing="12">
+            <Button text="Transfer to Savings" styleClass="btn-green" onAction="#handleDeposit" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
+            <Button text="Transfer to Wallet" styleClass="btn-orange" onAction="#handleWithdraw" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
+        </HBox>
+    </VBox>
+</VBox>

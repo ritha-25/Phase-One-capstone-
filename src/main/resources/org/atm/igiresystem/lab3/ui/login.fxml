@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+
+<StackPane xmlns:fx="http://javafx.com/fxml"
+           fx:controller="org.atm.igiresystem.lab3.ui.controllers.LoginController"
+           styleClass="login-root"
+           stylesheets="@styles.css"
+           prefWidth="440" prefHeight="580">
+
+    <VBox alignment="CENTER" spacing="0">
+
+        <VBox alignment="CENTER" spacing="6">
+            <padding><Insets bottom="32"/></padding>
+            <Label text="IgirePay" styleClass="login-logo-text"/>
+            <Label text="Secure Digital Wallet" styleClass="login-tagline"/>
+        </VBox>
+
+        <VBox styleClass="login-card" spacing="0" maxWidth="360" minWidth="320">
+
+            <VBox fx:id="phoneStep" spacing="16">
+                <Label text="Enter your phone number" style="-fx-font-size:16px;-fx-font-weight:bold;-fx-text-fill:#2C2C2C;"/>
+                <Label text="We'll verify your identity with your PIN" styleClass="lbl-hint"/>
+
+                <VBox spacing="6">
+                    <Label text="PHONE NUMBER" styleClass="lbl-field"/>
+                    <TextField fx:id="phoneField" promptText="e.g. 0788000000" styleClass="input-field"/>
+                </VBox>
+
+                <Label fx:id="messageLabel" styleClass="lbl-error" wrapText="true"/>
+
+                <Button text="Continue" styleClass="btn-green" onAction="#handlePhoneContinue"
+                        maxWidth="Infinity"/>
+
+                <Separator/>
+
+                <HBox alignment="CENTER" spacing="6">
+                    <Label text="New to IgirePay?" styleClass="lbl-hint"/>
+                    <Button text="Register" styleClass="btn-ghost" onAction="#handleRegister"/>
+                </HBox>
+            </VBox>
+
+            <VBox fx:id="pinStep" spacing="16" visible="false" managed="false">
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <Button text="← Back" styleClass="btn-ghost" onAction="#handleBack"/>
+                </HBox>
+
+                <VBox alignment="CENTER" spacing="4">
+                    <Label fx:id="greetingLabel" text="Welcome back!" style="-fx-font-size:16px;-fx-font-weight:bold;-fx-text-fill:#2C2C2C;"/>
+                    <Label fx:id="phoneDisplayLabel" text="" styleClass="lbl-hint"/>
+                </VBox>
+
+                <VBox spacing="6" alignment="CENTER">
+                    <Label text="ENTER YOUR PIN" styleClass="lbl-field"/>
+                    <PasswordField fx:id="pinField" promptText="● ● ● ●" styleClass="pin-field"
+                                  maxWidth="180"/>
+                </VBox>
+
+                <Label fx:id="pinMessageLabel" styleClass="lbl-error" wrapText="true" alignment="CENTER"/>
+
+                <Button text="Login" styleClass="btn-green" onAction="#handlePinLogin"
+                        maxWidth="Infinity"/>
+
+                <Button text="Forgot PIN? Contact Support" styleClass="btn-ghost"
+                        alignment="CENTER" maxWidth="Infinity"/>
+            </VBox>
+        </VBox>
+
+        <VBox alignment="CENTER">
+            <padding><Insets top="20"/></padding>
+            <Label text="© 2025 IgirePay Technologies Ltd." style="-fx-text-fill:rgba(255,255,255,0.45);-fx-font-size:11px;"/>
+        </VBox>
+    </VBox>
+</StackPane>

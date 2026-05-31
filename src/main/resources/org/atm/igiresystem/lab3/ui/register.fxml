@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+
+<StackPane xmlns:fx="http://javafx.com/fxml"
+           fx:controller="org.atm.igiresystem.lab3.ui.controllers.RegisterController"
+           styleClass="login-root"
+           stylesheets="@styles.css"
+           prefWidth="440" prefHeight="640">
+
+    <VBox alignment="CENTER" spacing="0">
+        <VBox alignment="CENTER" spacing="6">
+            <padding><Insets bottom="24"/></padding>
+            <Label text="IgirePay" styleClass="login-logo-text"/>
+            <Label text="Create your account" styleClass="login-tagline"/>
+        </VBox>
+
+        <VBox styleClass="login-card" spacing="16" maxWidth="360" minWidth="320">
+            <Label text="Register" style="-fx-font-size:18px;-fx-font-weight:bold;-fx-text-fill:#2C2C2C;"/>
+
+            <VBox spacing="6">
+                <Label text="FULL NAME" styleClass="lbl-field"/>
+                <TextField fx:id="fullNameField" promptText="Your full name" styleClass="input-field"/>
+            </VBox>
+
+            <VBox spacing="6">
+                <Label text="PHONE NUMBER" styleClass="lbl-field"/>
+                <TextField fx:id="phoneField" promptText="e.g. 0788000000" styleClass="input-field"/>
+            </VBox>
+
+            <VBox spacing="6">
+                <Label text="EMAIL (OPTIONAL)" styleClass="lbl-field"/>
+                <TextField fx:id="emailField" promptText="your@email.com" styleClass="input-field"/>
+            </VBox>
+
+            <VBox spacing="6">
+                <Label text="SET 4-DIGIT PIN" styleClass="lbl-field"/>
+                <PasswordField fx:id="pinField" promptText="● ● ● ●" styleClass="pin-field" maxWidth="180"/>
+            </VBox>
+
+            <VBox spacing="6">
+                <Label text="CONFIRM PIN" styleClass="lbl-field"/>
+                <PasswordField fx:id="confirmPinField" promptText="● ● ● ●" styleClass="pin-field" maxWidth="180"/>
+            </VBox>
+
+            <Label fx:id="messageLabel" styleClass="lbl-error" wrapText="true"/>
+
+            <Button text="Create Account" styleClass="btn-green" onAction="#handleRegister" maxWidth="Infinity"/>
+
+            <HBox alignment="CENTER" spacing="6">
+                <Label text="Already registered?" styleClass="lbl-hint"/>
+                <Button text="Login" styleClass="btn-ghost" onAction="#handleBack"/>
+            </HBox>
+        </VBox>
+    </VBox>
+</StackPane>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="org.atm.igiresystem.lab3.ui.controllers.DashboardController"
+            stylesheets="@styles.css"
+            prefWidth="960" prefHeight="640">
+
+    <left>
+        <VBox styleClass="sidebar" prefWidth="220" minWidth="220">
+
+            <VBox styleClass="sidebar-logo-box" spacing="2">
+                <Label text="💳 IgirePay" styleClass="sidebar-logo"/>
+                <Label text="Digital Wallet" styleClass="sidebar-tagline"/>
+            </VBox>
+
+            <Label text="MAIN MENU" styleClass="sidebar-section"/>
+            <Button text="🏠   Home"          styleClass="nav-btn" fx:id="btnHome"     onAction="#showDashboard"/>
+            <Button text="💳   My Accounts"   styleClass="nav-btn" fx:id="btnAccounts" onAction="#showAccounts"/>
+            <Button text="💸   Send Money"    styleClass="nav-btn" fx:id="btnTransfer" onAction="#showTransfer"/>
+            <Button text="🏦   Savings"       styleClass="nav-btn" fx:id="btnSavings"  onAction="#showSavings"/>
+            <Button text="📋   History"       styleClass="nav-btn" fx:id="btnHistory"  onAction="#showHistory"/>
+            <Button text="💰   Loans"         styleClass="nav-btn" fx:id="btnLoans"    onAction="#showLoans"/>
+            <Button text="🔒   Duplicate Test" styleClass="nav-btn" fx:id="btnIdempotency" onAction="#showIdempotency"/>
+            <Button text="👤   My Profile"    styleClass="nav-btn" fx:id="btnProfile"     onAction="#showProfile"/>
+
+            <Label text="ADMIN" styleClass="sidebar-section" fx:id="adminSection" visible="false" managed="false"/>
+            <Button text="⚙️   Admin Panel"  styleClass="nav-btn" fx:id="adminBtn"
+                    onAction="#showAdmin" visible="false" managed="false"/>
+
+            <Region VBox.vgrow="ALWAYS"/>
+
+            <VBox style="-fx-padding:12 20 8 20;" spacing="2">
+                <Separator/>
+                <Label fx:id="sidebarUserLabel" text="" style="-fx-text-fill:rgba(255,255,255,0.6);-fx-font-size:12px;-fx-padding:8 0 0 0;"/>
+            </VBox>
+            <Button text="🚪   Logout" styleClass="nav-btn-logout" onAction="#handleLogout"/>
+            <VBox style="-fx-padding:0 0 12 0;"/>
+        </VBox>
+    </left>
+
+    <center>
+        <VBox>
+            <HBox styleClass="top-header" alignment="CENTER_LEFT" spacing="0">
+                <Label fx:id="headerTitle" text="Home" styleClass="header-title" HBox.hgrow="ALWAYS"/>
+                <Label fx:id="headerUser" text="" styleClass="header-user"/>
+            </HBox>
+
+            <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS" styleClass="scroll-pane">
+                <StackPane fx:id="contentArea" style="-fx-padding:24;">
+
+                </StackPane>
+            </ScrollPane>
+        </VBox>
+    </center>
+</BorderPane>

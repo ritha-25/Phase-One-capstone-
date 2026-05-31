@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="org.atm.igiresystem.lab3.ui.controllers.TransferController"
+      stylesheets="@styles.css"
+      spacing="20">
+
+    <HBox spacing="0" style="-fx-background-color:#FFFFFF;-fx-background-radius:10;-fx-effect:dropshadow(gaussian,rgba(0,0,0,0.06),8,0,0,2);">
+        <Button fx:id="tabDeposit"  text="Deposit"    onAction="#switchToDeposit"
+                style="-fx-background-color:#003087;-fx-text-fill:white;-fx-font-weight:bold;-fx-padding:12 20;-fx-background-radius:10 0 0 10;-fx-cursor:hand;"/>
+        <Button fx:id="tabWithdraw" text="Withdraw"   onAction="#switchToWithdraw"
+                style="-fx-background-color:#F9FAFB;-fx-text-fill:#6B7280;-fx-font-weight:bold;-fx-padding:12 20;-fx-background-radius:0;-fx-cursor:hand;"/>
+        <Button fx:id="tabTransfer" text="Send Money" onAction="#switchToTransfer"
+                style="-fx-background-color:#F9FAFB;-fx-text-fill:#6B7280;-fx-font-weight:bold;-fx-padding:12 20;-fx-background-radius:0;-fx-cursor:hand;"/>
+        <Button fx:id="tabInternal" text="My Accounts Transfer" onAction="#switchToInternal"
+                style="-fx-background-color:#F9FAFB;-fx-text-fill:#6B7280;-fx-font-weight:bold;-fx-padding:12 20;-fx-background-radius:0 10 10 0;-fx-cursor:hand;"/>
+    </HBox>
+
+    <VBox fx:id="depositForm" styleClass="card" spacing="16" maxWidth="480">
+        <Label text="Deposit Money" styleClass="lbl-screen-title"/>
+        <Label text="Add money to your account" styleClass="lbl-hint"/>
+        <Separator/>
+        <VBox spacing="6">
+            <Label text="SELECT ACCOUNT" styleClass="lbl-field"/>
+            <ComboBox fx:id="depositAccountCombo" promptText="Choose account" maxWidth="Infinity" style="-fx-font-size:13px;"/>
+        </VBox>
+        <VBox spacing="6">
+            <Label text="AMOUNT (RWF)" styleClass="lbl-field"/>
+            <TextField fx:id="depositAmount" promptText="e.g. 10,000" styleClass="input-field"/>
+        </VBox>
+        <VBox spacing="6">
+            <Label text="PIN" styleClass="lbl-field"/>
+            <PasswordField fx:id="depositPin" promptText="Enter your PIN" styleClass="input-field"/>
+        </VBox>
+        <Label fx:id="depositMsg" wrapText="true"/>
+        <Button text="Deposit" styleClass="btn-green" onAction="#handleDeposit" maxWidth="Infinity"/>
+    </VBox>
+
+    <VBox fx:id="withdrawForm" styleClass="card" spacing="16" maxWidth="480" visible="false" managed="false">
+        <Label text="Withdraw Money" styleClass="lbl-screen-title"/>
+        <Label text="Wallet withdrawals include a 100 RWF fee. Savings: no fee." styleClass="lbl-hint"/>
+        <Separator/>
+        <VBox spacing="6">
+            <Label text="SELECT ACCOUNT" styleClass="lbl-field"/>
+            <ComboBox fx:id="withdrawAccountCombo" promptText="Choose account" maxWidth="Infinity" style="-fx-font-size:13px;"/>
+        </VBox>
+        <VBox spacing="6">
+            <Label text="AMOUNT (RWF)" styleClass="lbl-field"/>
+            <TextField fx:id="withdrawAmount" promptText="e.g. 5,000" styleClass="input-field"/>
+        </VBox>
+        <VBox spacing="6">
+            <Label text="PIN" styleClass="lbl-field"/>
+            <PasswordField fx:id="withdrawPin" promptText="Enter your PIN" styleClass="input-field"/>
+        </VBox>
+        <Label fx:id="withdrawMsg" wrapText="true"/>
+        <Button text="Withdraw" styleClass="btn-orange" onAction="#handleWithdraw" maxWidth="Infinity"/>
+    </VBox>
+
+    <VBox fx:id="transferForm" styleClass="card" spacing="16" maxWidth="480" visible="false" managed="false">
+        <Label text="Send Money" styleClass="lbl-screen-title"/>
+        <Label text="Send to another IgirePay user. Transfer fee: 100 RWF." styleClass="lbl-hint"/>
+        <Separator/>
+        <VBox spacing="6">
+            <Label text="FROM ACCOUNT" styleClass="lbl-field"/>
+            <ComboBox fx:id="transferAccountCombo" promptText="Choose your account" maxWidth="Infinity" style="-fx-font-size:13px;"/>
+        </VBox>
+        <VBox spacing="6">
+            <Label text="RECEIVER PHONE NUMBER" styleClass="lbl-field"/>
+            <TextField fx:id="receiverPhone" promptText="e.g. 0788000000" styleClass="input-field"/>
+            <Label fx:id="receiverNameLabel" text="" style="-fx-text-fill:#003087;-fx-font-size:12px;"/>
+        </VBox>
+        <VBox spacing="6">
+            <Label text="AMOUNT (RWF)" styleClass="lbl-field"/>
+            <TextField fx:id="transferAmount" promptText="e.g. 10,000" styleClass="input-field"/>
+        </VBox>
+        <VBox spacing="6">
+            <Label text="PIN" styleClass="lbl-field"/>
+            <PasswordField fx:id="transferPin" promptText="Enter your PIN" styleClass="input-field"/>
+        </VBox>
+        <Label fx:id="transferMsg" wrapText="true"/>
+        <Button text="Send Money" styleClass="btn-green" onAction="#handleTransfer" maxWidth="Infinity"/>
+    </VBox>
+
+    <VBox fx:id="internalForm" styleClass="card" spacing="16" maxWidth="480" visible="false" managed="false">
+        <Label text="Transfer Between My Accounts" styleClass="lbl-screen-title"/>
+        <Label text="Move money between your own accounts. No fee." styleClass="lbl-hint"/>
+        <Separator/>
+        <VBox spacing="6">
+            <Label text="FROM" styleClass="lbl-field"/>
+            <ComboBox fx:id="internalFromCombo" promptText="Source account" maxWidth="Infinity" style="-fx-font-size:13px;"/>
+        </VBox>
+        <VBox spacing="6">
+            <Label text="TO" styleClass="lbl-field"/>
+            <ComboBox fx:id="internalToCombo" promptText="Destination account" maxWidth="Infinity" style="-fx-font-size:13px;"/>
+        </VBox>
+        <VBox spacing="6">
+            <Label text="AMOUNT (RWF)" styleClass="lbl-field"/>
+            <TextField fx:id="internalAmount" promptText="e.g. 5,000" styleClass="input-field"/>
+        </VBox>
+        <VBox spacing="6">
+            <Label text="PIN" styleClass="lbl-field"/>
+            <PasswordField fx:id="internalPin" promptText="Enter your PIN" styleClass="input-field"/>
+        </VBox>
+        <Label fx:id="internalMsg" wrapText="true"/>
+        <Button text="Transfer" styleClass="btn-green" onAction="#handleInternalTransfer" maxWidth="Infinity"/>
+    </VBox>
+</VBox>

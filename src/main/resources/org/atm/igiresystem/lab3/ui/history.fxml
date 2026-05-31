@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="org.atm.igiresystem.lab3.ui.controllers.HistoryController"
+      stylesheets="@styles.css"
+      spacing="16">
+
+    <HBox styleClass="card" spacing="12" alignment="CENTER_LEFT" style="-fx-padding:14 20;">
+        <VBox spacing="4" HBox.hgrow="ALWAYS">
+            <Label text="SELECT ACCOUNT" styleClass="lbl-field"/>
+            <ComboBox fx:id="accountCombo" promptText="Choose account" prefWidth="220"
+                      style="-fx-font-size:13px;" onAction="#onAccountSelected"/>
+        </VBox>
+        <VBox spacing="4">
+            <Label text=" " styleClass="lbl-field"/>
+            <HBox spacing="8">
+                <Button text="Load History" styleClass="btn-green" onAction="#loadHistory"/>
+                <Button text="Export CSV"   styleClass="btn-orange" onAction="#exportCSV"/>
+            </HBox>
+        </VBox>
+        <Label fx:id="messageLabel" styleClass="lbl-success" HBox.hgrow="ALWAYS"/>
+    </HBox>
+
+    <TableView fx:id="transactionTable" VBox.vgrow="ALWAYS" styleClass="table-view">
+        <columns>
+            <TableColumn fx:id="colRef"    text="Reference ID"  prefWidth="160"/>
+            <TableColumn fx:id="colType"   text="Type"          prefWidth="100"/>
+            <TableColumn fx:id="colAmount" text="Amount (RWF)"  prefWidth="120"/>
+            <TableColumn fx:id="colStatus" text="Status"        prefWidth="100"/>
+            <TableColumn fx:id="colTime"   text="Date &amp; Time" prefWidth="180"/>
+        </columns>
+        <placeholder>
+            <Label text="Select an account and click 'Load History'" styleClass="lbl-hint"/>
+        </placeholder>
+    </TableView>
+</VBox>
