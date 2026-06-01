@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="org.atm.igiresystem.lab3.ui.controllers.AccountsController"
+      stylesheets="@styles.css"
+      spacing="20">
+
+    <VBox styleClass="card" spacing="14" maxWidth="480">
+        <Label text="Create New Account" styleClass="lbl-screen-title"/>
+        <Label text="Choose the type of account you want to open" styleClass="lbl-hint"/>
+        <Separator/>
+
+        <HBox spacing="16">
+            <VBox styleClass="quick-action" spacing="8" alignment="CENTER" HBox.hgrow="ALWAYS"
+                  onMouseClicked="#createWallet" style="-fx-cursor:hand;-fx-pref-width:140;">
+                <Label text="💳" styleClass="quick-action-icon"/>
+                <Label text="Main Wallet" style="-fx-font-weight:bold;-fx-text-fill:#2C2C2C;"/>
+                <Label text="Instant transfers&#10;100 RWF fee" styleClass="lbl-hint" alignment="CENTER" wrapText="true"/>
+                <Button text="Open Wallet" styleClass="btn-green" onAction="#createWallet" maxWidth="Infinity"/>
+            </VBox>
+
+            <VBox styleClass="quick-action" spacing="8" alignment="CENTER" HBox.hgrow="ALWAYS"
+                  onMouseClicked="#createSavings" style="-fx-cursor:hand;-fx-pref-width:140;">
+                <Label text="🏦" styleClass="quick-action-icon"/>
+                <Label text="Savings Account" style="-fx-font-weight:bold;-fx-text-fill:#2C2C2C;"/>
+                <Label text="Free deposits&#10;Free withdrawals" styleClass="lbl-hint" alignment="CENTER" wrapText="true"/>
+                <Button text="Open Savings" styleClass="btn-orange" onAction="#createSavings" maxWidth="Infinity"/>
+            </VBox>
+
+            <VBox styleClass="quick-action" spacing="8" alignment="CENTER" HBox.hgrow="ALWAYS"
+                  onMouseClicked="#createLockSavings" style="-fx-cursor:hand;-fx-pref-width:140;">
+                <Label text="🔒" styleClass="quick-action-icon"/>
+                <Label text="Lock Savings" style="-fx-font-weight:bold;-fx-text-fill:#2C2C2C;"/>
+                <Label text="Disciplined saving&#10;3-min withdrawal delay" styleClass="lbl-hint" alignment="CENTER" wrapText="true"/>
+                <Button text="Open Lock Savings" styleClass="btn-orange" onAction="#createLockSavings" maxWidth="Infinity"/>
+            </VBox>
+        </HBox>
+
+        <Label fx:id="createMsg" styleClass="lbl-success" wrapText="true"/>
+    </VBox>
+
+    <VBox styleClass="card" spacing="14" maxWidth="480">
+        <HBox alignment="CENTER_LEFT">
+            <Label text="My Accounts" styleClass="lbl-screen-title" HBox.hgrow="ALWAYS"/>
+            <Button text="Refresh" styleClass="btn-ghost" onAction="#loadAccounts"/>
+        </HBox>
+        <Separator/>
+        <VBox fx:id="accountsList" spacing="10">
+            <Label text="Loading..." styleClass="lbl-hint"/>
+        </VBox>
+    </VBox>
+</VBox>

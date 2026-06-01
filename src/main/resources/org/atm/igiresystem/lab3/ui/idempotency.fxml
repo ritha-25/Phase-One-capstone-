@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="org.atm.igiresystem.lab3.ui.controllers.IdempotencyController"
+      stylesheets="@styles.css"
+      spacing="20">
+
+    <HBox style="-fx-background-color:#EFF6FF;-fx-background-radius:10;-fx-padding:14 18;" spacing="10" alignment="CENTER_LEFT">
+        <Label text="🔒" style="-fx-font-size:16px;"/>
+        <VBox spacing="2">
+            <Label text="Duplicate Transaction Prevention Demo" style="-fx-font-weight:bold;-fx-text-fill:#1D4ED8;-fx-font-size:13px;"/>
+            <Label text="Send the same Reference ID twice to see how the system blocks duplicate transactions."
+                   style="-fx-text-fill:#1D4ED8;-fx-font-size:11px;" wrapText="true"/>
+        </VBox>
+    </HBox>
+
+    <VBox styleClass="card" spacing="16" maxWidth="520">
+        <Label text="Test Transaction" styleClass="lbl-screen-title"/>
+        <Separator/>
+
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <VBox spacing="6" HBox.hgrow="ALWAYS">
+                <Label text="REFERENCE ID" styleClass="lbl-field"/>
+                <TextField fx:id="refIdField" promptText="e.g. REF-1001" styleClass="input-field"/>
+            </VBox>
+            <VBox spacing="6">
+                <Label text=" " styleClass="lbl-field"/>
+                <Button text="Generate" styleClass="btn-ghost" onAction="#handleGenerateRef"/>
+            </VBox>
+        </HBox>
+
+        <HBox spacing="12">
+            <VBox spacing="6" HBox.hgrow="ALWAYS">
+                <Label text="ACCOUNT" styleClass="lbl-field"/>
+                <ComboBox fx:id="accountCombo" maxWidth="Infinity" style="-fx-font-size:13px;"/>
+            </VBox>
+            <VBox spacing="6" HBox.hgrow="ALWAYS">
+                <Label text="AMOUNT (RWF)" styleClass="lbl-field"/>
+                <TextField fx:id="amountField" promptText="e.g. 1,000" styleClass="input-field"/>
+            </VBox>
+        </HBox>
+
+        <VBox spacing="6">
+            <Label text="PIN" styleClass="lbl-field"/>
+            <PasswordField fx:id="pinField" promptText="Enter your PIN" styleClass="input-field" maxWidth="200"/>
+        </VBox>
+
+        <Label fx:id="statusLabel" wrapText="true"/>
+
+        <HBox spacing="12">
+            <Button text="Send Transaction" styleClass="btn-green" onAction="#handleSendTransaction" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
+            <Button text="Clear Log" styleClass="btn-ghost" onAction="#handleClearLog"/>
+        </HBox>
+    </VBox>
+
+    <VBox styleClass="card" spacing="12" maxWidth="520">
+        <Label text="Transaction Log" styleClass="lbl-screen-title"/>
+        <Label text="Watch what happens when you send the same Reference ID twice:" styleClass="lbl-hint"/>
+        <Separator/>
+        <ScrollPane fitToWidth="true" prefHeight="200" style="-fx-background:transparent;-fx-background-color:transparent;">
+            <VBox fx:id="logBox" spacing="4" style="-fx-padding:4;"/>
+        </ScrollPane>
+    </VBox>
+</VBox>

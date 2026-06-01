@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="org.atm.igiresystem.lab3.ui.controllers.ProfileController"
+      stylesheets="@styles.css"
+      spacing="20">
+
+    <VBox styleClass="card" spacing="16" maxWidth="480">
+        <Label text="Update Profile" styleClass="lbl-screen-title"/>
+        <Label text="Update your personal information" styleClass="lbl-hint"/>
+        <Separator/>
+
+        <VBox spacing="6">
+            <Label text="FULL NAME" styleClass="lbl-field"/>
+            <TextField fx:id="fullNameField" styleClass="input-field"/>
+        </VBox>
+
+        <VBox spacing="6">
+            <Label text="EMAIL" styleClass="lbl-field"/>
+            <TextField fx:id="emailField" promptText="your@email.com" styleClass="input-field"/>
+        </VBox>
+
+        <VBox spacing="6">
+            <Label text="PHONE NUMBER" styleClass="lbl-field"/>
+            <TextField fx:id="phoneField" styleClass="input-field"/>
+        </VBox>
+
+        <Label fx:id="messageLabel" wrapText="true"/>
+        <Button text="Save Changes" styleClass="btn-green" onAction="#handleUpdateProfile" maxWidth="Infinity"/>
+    </VBox>
+
+    <VBox styleClass="card" spacing="16" maxWidth="480">
+        <Label text="Change PIN" styleClass="lbl-screen-title"/>
+        <Label text="Your PIN is used to confirm all transactions" styleClass="lbl-hint"/>
+        <Separator/>
+
+        <VBox spacing="6">
+            <Label text="CURRENT PIN" styleClass="lbl-field"/>
+            <PasswordField fx:id="currentPinField" promptText="● ● ● ●" styleClass="pin-field" maxWidth="180"/>
+        </VBox>
+
+        <VBox spacing="6">
+            <Label text="NEW PIN" styleClass="lbl-field"/>
+            <PasswordField fx:id="newPinField" promptText="● ● ● ●" styleClass="pin-field" maxWidth="180"/>
+        </VBox>
+
+        <VBox spacing="6">
+            <Label text="CONFIRM NEW PIN" styleClass="lbl-field"/>
+            <PasswordField fx:id="confirmPinField" promptText="● ● ● ●" styleClass="pin-field" maxWidth="180"/>
+        </VBox>
+
+        <Label fx:id="pinMessageLabel" wrapText="true"/>
+        <Button text="Change PIN" styleClass="btn-orange" onAction="#handleChangePin" maxWidth="Infinity"/>
+    </VBox>
+</VBox>

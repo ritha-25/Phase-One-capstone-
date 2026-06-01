@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="org.atm.igiresystem.lab3.ui.controllers.AdminController"
+      stylesheets="@styles.css"
+      spacing="16">
+
+    <HBox styleClass="card" spacing="10" alignment="CENTER_LEFT" style="-fx-padding:14 20;" wrap="true">
+        <Button text="All Customers"    styleClass="btn-green"  onAction="#loadCustomers"/>
+        <Button text="All Transactions" styleClass="btn-orange" onAction="#loadTransactions"/>
+        <Button text="All Loans"        styleClass="btn-green"  onAction="#loadLoans"/>
+        <Button text="Daily Summary"    styleClass="btn-green"  onAction="#showDailySummary"/>
+        <Button text="Export CSV"       styleClass="btn-orange" onAction="#exportAll"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Label fx:id="messageLabel" styleClass="lbl-success" wrapText="true"/>
+    </HBox>
+
+    <TableView fx:id="dataTable" VBox.vgrow="ALWAYS" styleClass="table-view">
+        <columns>
+            <TableColumn fx:id="col1" text="Col 1" prefWidth="100"/>
+            <TableColumn fx:id="col2" text="Col 2" prefWidth="160"/>
+            <TableColumn fx:id="col3" text="Col 3" prefWidth="160"/>
+            <TableColumn fx:id="col4" text="Col 4" prefWidth="130"/>
+            <TableColumn fx:id="col5" text="Col 5" prefWidth="130"/>
+        </columns>
+        <placeholder>
+            <Label text="Click a button above to load data" styleClass="lbl-hint"/>
+        </placeholder>
+    </TableView>
+
+    <VBox fx:id="summaryBox" styleClass="card" spacing="8" visible="false" managed="false" maxWidth="480">
+        <Label text="Loading summary..." styleClass="lbl-hint"/>
+    </VBox>
+
+    <HBox styleClass="card" spacing="12" alignment="CENTER_LEFT" style="-fx-padding:14 20;" wrap="true">
+        <Label text="Account ID:" style="-fx-font-weight:bold;-fx-text-fill:#374151;"/>
+        <TextField fx:id="deleteIdField" promptText="Account or Customer ID" prefWidth="160" styleClass="input-field"
+                   style="-fx-padding:8 12;"/>
+        <Button text="Delete Account" styleClass="btn-danger" onAction="#deleteAccount"/>
+        <Button text="Unlock Customer" styleClass="btn-orange" onAction="#unlockCustomer"/>
+
+        <Separator orientation="VERTICAL"/>
+
+        <Label text="Loan ID:" style="-fx-font-weight:bold;-fx-text-fill:#374151;"/>
+        <TextField fx:id="loanIdField" promptText="Loan ID" prefWidth="100" styleClass="input-field"
+                   style="-fx-padding:8 12;"/>
+        <Button text="Approve Loan" styleClass="btn-green" onAction="#approveLoan"/>
+        <Button text="Reject Loan"  styleClass="btn-danger" onAction="#rejectLoan"/>
+    </HBox>
+</VBox>

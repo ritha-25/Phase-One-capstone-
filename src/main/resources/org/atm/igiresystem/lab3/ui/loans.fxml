@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="org.atm.igiresystem.lab3.ui.controllers.LoanController"
+      stylesheets="@styles.css"
+      spacing="20">
+
+    <HBox style="-fx-background-color:#FEF3C7;-fx-background-radius:10;-fx-padding:14 18;" spacing="10" alignment="CENTER_LEFT">
+        <Label text="💰" style="-fx-font-size:16px;"/>
+        <VBox spacing="2">
+            <Label text="IgirePay Loan Service" style="-fx-font-weight:bold;-fx-text-fill:#92400E;-fx-font-size:13px;"/>
+            <Label text="Eligibility: Min 20,000 RWF savings required. Savings below 50,000 RWF limits loan to 100,000 RWF max."
+                   style="-fx-text-fill:#92400E;-fx-font-size:11px;" wrapText="true"/>
+        </VBox>
+    </HBox>
+
+    <VBox styleClass="card" spacing="16" maxWidth="480">
+        <Label text="Request a Loan" styleClass="lbl-screen-title"/>
+        <Label text="Fill in the details below to submit your loan request" styleClass="lbl-hint"/>
+        <Separator/>
+
+        <VBox spacing="6">
+            <Label text="RECEIVE FUNDS INTO" styleClass="lbl-field"/>
+            <ComboBox fx:id="accountCombo" promptText="Select account" maxWidth="Infinity" style="-fx-font-size:14px;"/>
+        </VBox>
+
+        <VBox spacing="6">
+            <Label text="LOAN AMOUNT (RWF)" styleClass="lbl-field"/>
+            <TextField fx:id="amountField" promptText="e.g. 100,000" styleClass="input-field"/>
+        </VBox>
+
+        <VBox spacing="6">
+            <Label text="PURPOSE OF LOAN" styleClass="lbl-field"/>
+            <TextField fx:id="purposeField" promptText="e.g. Business capital, School fees..." styleClass="input-field"/>
+        </VBox>
+
+        <VBox spacing="6">
+            <Label text="CONFIRM WITH PIN" styleClass="lbl-field"/>
+            <PasswordField fx:id="pinField" promptText="Enter your PIN" styleClass="input-field"/>
+        </VBox>
+
+        <Label fx:id="messageLabel" styleClass="lbl-error" wrapText="true"/>
+        <Button text="Submit Loan Request" styleClass="btn-green" onAction="#handleRequestLoan" maxWidth="Infinity"/>
+    </VBox>
+
+    <VBox styleClass="card" spacing="14" maxWidth="480">
+        <HBox alignment="CENTER_LEFT">
+            <Label text="My Loan Requests" styleClass="lbl-screen-title" HBox.hgrow="ALWAYS"/>
+            <Button text="Refresh" styleClass="btn-ghost" onAction="#loadMyLoans"/>
+        </HBox>
+        <Separator/>
+        <VBox fx:id="loansList" spacing="10">
+            <Label text="Loading..." styleClass="lbl-hint"/>
+        </VBox>
+    </VBox>
+</VBox>
