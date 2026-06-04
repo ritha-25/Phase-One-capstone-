@@ -8,9 +8,9 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import org.atm.igiresystem.lab1.models.Account;
 import org.atm.igiresystem.lab1.models.Customer;
@@ -33,6 +33,8 @@ public class DashboardController implements Initializable {
     @FXML private Button    btnTransfer;
     @FXML private Button    btnSavings;
     @FXML private Button    btnHistory;
+    @FXML private Button    btnLoans;
+    @FXML private Button    btnProfile;
 
     private final AccountService accountService = new AccountService();
     private Button activeNavBtn = null;
@@ -42,7 +44,7 @@ public class DashboardController implements Initializable {
         Customer customer = Session.getCustomer();
         if (customer != null) {
             sidebarUserLabel.setText(customer.getFullName() + "\n" + customer.getPhoneNumber());
-            headerUser.setText(customer.getPhoneNumber());
+            headerUser.setText(customer.getFullName());
         }
         if (Session.isAdmin()) {
             adminBtn.setVisible(true);
@@ -66,24 +68,25 @@ public class DashboardController implements Initializable {
         VBox home = new VBox(20);
         home.setStyle("-fx-padding:4 0 0 0;");
 
-        // Balance cards
         for (Account acc : accounts) {
             VBox card = new VBox(6);
-            card.setStyle("-fx-background-color:linear-gradient(to bottom right,#1E8E3E,#2ECC71);" +
+            card.setStyle("-fx-background-color:linear-gradient(to bottom right,#005B2A,#00873F);" +
                           "-fx-background-radius:14;-fx-padding:22 26;" +
-                          "-fx-effect:dropshadow(gaussian,rgba(30,142,62,0.30),12,0,0,3);");
+                          "-fx-effect:dropshadow(gaussian,rgba(0,91,42,0.35),12,0,0,3);");
             card.setMaxWidth(460);
 
-            Label typeLabel = new Label(acc.getAccountType() + " ACCOUNT");
-            typeLabel.setStyle("-fx-text-fill:rgba(255,255,255,0.80);-fx-font-size:11px;-fx-font-weight:bold;");
+            String displayName = "WALLET".equals(acc.getAccountType()) ? "MAIN WALLET" : "SAVINGS ACCOUNT";
+            Label typeLabel = new Label(displayName);
+            typeLabel.setStyle("-fx-text-fill:rgba(255,255,255,0.75);-fx-font-size:11px;-fx-font-weight:bold;");
 
             Label balLabel = new Label(String.format("%.2f RWF", acc.getBalance()));
             balLabel.setStyle("-fx-text-fill:#FFFFFF;-fx-font-size:30px;-fx-font-weight:bold;");
 
-            Label idLabel = new Label("Account #" + acc.getId());
-            idLabel.setStyle("-fx-text-fill:rgba(255,255,255,0.65);-fx-font-size:12px;");
+            String hint = "WALLET".equals(acc.getAccountType()) ? "💳 Instant transfers" : "🏦 No-fee savings";
+            Label hintLabel = new Label(hint);
+            hintLabel.setStyle("-fx-text-fill:rgba(255,255,255,0.60);-fx-font-size:12px;");
 
-            card.getChildren().addAll(typeLabel, balLabel, idLabel);
+            card.getChildren().addAll(typeLabel, balLabel, hintLabel);
             home.getChildren().add(card);
         }
 
@@ -96,28 +99,18 @@ public class DashboardController implements Initializable {
             icon.setStyle("-fx-font-size:40px;");
             Label msg = new Label("No accounts yet");
             msg.setStyle("-fx-font-size:16px;-fx-font-weight:bold;-fx-text-fill:#374151;");
-            Label hint = new Label("Go to 'My Accounts' to create your first account");
+            Label hint = new Label("Go to My Accounts to create your first account");
             hint.setStyle("-fx-font-size:12px;-fx-text-fill:#9CA3AF;");
             empty.getChildren().addAll(icon, msg, hint);
             home.getChildren().add(empty);
         }
 
-        // Quick actions row
         HBox quickActions = new HBox(12);
         quickActions.setMaxWidth(460);
         quickActions.setStyle("-fx-padding:4 0 0 0;");
 
-        String[][] actions = {
-            {"💸", "Send"},
-            {"⬇", "Deposit"},
-            {"⬆", "Withdraw"},
-            {"🏦", "Savings"},
-            {"📋", "History"}
-        };
-        Runnable[] handlers = {
-            this::showTransfer, this::showTransfer,
-            this::showTransfer, this::showSavings, this::showHistory
-        };
+        String[][] actions = {{"💸","Send"},{"⬇","Deposit"},{"⬆","Withdraw"},{"🏦","Savings"},{"📋","History"}};
+        Runnable[] handlers = {this::showTransfer, this::showTransfer, this::showTransfer, this::showSavings, this::showHistory};
 
         for (int i = 0; i < actions.length; i++) {
             final int idx = i;
@@ -132,8 +125,8 @@ public class DashboardController implements Initializable {
             lbl.setStyle("-fx-font-size:11px;-fx-text-fill:#4B5563;-fx-font-weight:bold;");
             btn.getChildren().addAll(icon, lbl);
             btn.setOnMouseClicked(e -> handlers[idx].run());
-            btn.setOnMouseEntered(e -> btn.setStyle(btn.getStyle().replace("#FFFFFF", "#F0FFF4")));
-            btn.setOnMouseExited(e  -> btn.setStyle(btn.getStyle().replace("#F0FFF4", "#FFFFFF")));
+            btn.setOnMouseEntered(e -> btn.setStyle(btn.getStyle().replace("#FFFFFF", "#F0F8F0")));
+            btn.setOnMouseExited(e  -> btn.setStyle(btn.getStyle().replace("#F0F8F0", "#FFFFFF")));
             quickActions.getChildren().add(btn);
         }
         home.getChildren().add(quickActions);
@@ -164,6 +157,18 @@ public class DashboardController implements Initializable {
         loadPane("history.fxml");
     }
 
+    @FXML public void showLoans() {
+        setActive(btnLoans);
+        headerTitle.setText("Loan Requests");
+        loadPane("loans.fxml");
+    }
+
+    @FXML public void showProfile() {
+        setActive(btnProfile);
+        headerTitle.setText("My Profile");
+        loadPane("profile.fxml");
+    }
+
     @FXML public void showAdmin() {
         headerTitle.setText("Admin Panel");
         loadPane("admin.fxml");
@@ -191,7 +196,7 @@ public class DashboardController implements Initializable {
             Node node = loader.load();
             setContent(node);
         } catch (Exception e) {
-            Label err = new Label("Failed to load screen: " + e.getMessage());
+            Label err = new Label("Failed to load: " + e.getMessage());
             err.setStyle("-fx-text-fill:#DC2626;");
             setContent(err);
         }
@@ -202,9 +207,7 @@ public class DashboardController implements Initializable {
     }
 
     private void setActive(Button btn) {
-        if (activeNavBtn != null) {
-            activeNavBtn.getStyleClass().remove("nav-btn-active");
-        }
+        if (activeNavBtn != null) activeNavBtn.getStyleClass().remove("nav-btn-active");
         activeNavBtn = btn;
         if (btn != null) btn.getStyleClass().add("nav-btn-active");
     }

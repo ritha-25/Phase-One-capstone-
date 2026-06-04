@@ -11,6 +11,7 @@ import org.atm.igiresystem.lab3.services.AccountService;
 import org.atm.igiresystem.lab3.services.TransactionService;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -18,183 +19,256 @@ import java.util.UUID;
 
 public class TransferController implements Initializable {
 
-    // Tab buttons
     @FXML private Button tabDeposit;
     @FXML private Button tabWithdraw;
     @FXML private Button tabTransfer;
 
-    // Deposit form
-    @FXML private VBox          depositForm;
+    @FXML private VBox             depositForm;
     @FXML private ComboBox<String> depositAccountCombo;
-    @FXML private TextField     depositAmount;
-    @FXML private PasswordField depositPin;
-    @FXML private Label         depositMsg;
+    @FXML private TextField        depositAmount;
+    @FXML private PasswordField    depositPin;
+    @FXML private Label            depositMsg;
 
-    // Withdraw form
-    @FXML private VBox          withdrawForm;
+    @FXML private VBox             withdrawForm;
     @FXML private ComboBox<String> withdrawAccountCombo;
-    @FXML private TextField     withdrawAmount;
-    @FXML private PasswordField withdrawPin;
-    @FXML private Label         withdrawMsg;
+    @FXML private TextField        withdrawAmount;
+    @FXML private PasswordField    withdrawPin;
+    @FXML private Label            withdrawMsg;
 
-    // Transfer form
-    @FXML private VBox          transferForm;
+    @FXML private VBox             transferForm;
     @FXML private ComboBox<String> transferAccountCombo;
-    @FXML private TextField     receiverPhone;
-    @FXML private Label         receiverNameLabel;
-    @FXML private TextField     transferAmount;
-    @FXML private PasswordField transferPin;
-    @FXML private Label         transferMsg;
+    @FXML private TextField        receiverPhone;
+    @FXML private Label            receiverNameLabel;
+    @FXML private TextField        transferAmount;
+    @FXML private PasswordField    transferPin;
+    @FXML private Label            transferMsg;
+    @FXML private VBox             refIdBox;
+    @FXML private Label            refIdLabel;
 
     private final AccountService     accountService     = new AccountService();
     private final TransactionService transactionService = new TransactionService();
     private final CustomerDAO        customerDAO        = new CustomerDAO();
 
-    private List<Account> myAccounts;
+    private List<Account> walletAccounts = new ArrayList<>();
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        loadMyAccounts();
-        // Live receiver name lookup
+        loadWalletAccounts();
         receiverPhone.textProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal.length() >= 10) {
-                customerDAO.findByPhone(newVal.trim()).ifPresentOrElse(
-                    c -> receiverNameLabel.setText("✓ " + c.getFullName()),
-                    ()  -> receiverNameLabel.setText("Phone not registered")
-                );
+                Optional<Customer> found = customerDAO.findByPhone(newVal.trim());
+                if (found.isPresent()) {
+                    receiverNameLabel.setText("✓ " + found.get().getFullName());
+                    receiverNameLabel.setStyle("-fx-text-fill:#005B2A;-fx-font-size:12px;-fx-font-weight:bold;");
+                } else {
+                    receiverNameLabel.setText("Phone not registered");
+                    receiverNameLabel.setStyle("-fx-text-fill:#C62828;-fx-font-size:12px;");
+                }
             } else {
                 receiverNameLabel.setText("");
             }
         });
     }
 
-    private void loadMyAccounts() {
+    private void loadWalletAccounts() {
         if (Session.getCustomer() == null) return;
-        myAccounts = accountService.getCustomerAccounts(Session.getCustomer().getId());
+        List<Account> all = accountService.getCustomerAccounts(Session.getCustomer().getId());
+        walletAccounts.clear();
         depositAccountCombo.getItems().clear();
         withdrawAccountCombo.getItems().clear();
         transferAccountCombo.getItems().clear();
-        for (Account acc : myAccounts) {
-            String label = acc.getAccountType() + " #" + acc.getId() +
-                           "  (" + String.format("%.2f", acc.getBalance()) + " RWF)";
-            depositAccountCombo.getItems().add(label);
-            withdrawAccountCombo.getItems().add(label);
-            transferAccountCombo.getItems().add(label);
+
+        for (Account acc : all) {
+            if ("WALLET".equals(acc.getAccountType())) {
+                walletAccounts.add(acc);
+                String label = "Main Wallet  (" + String.format("%.2f", acc.getBalance()) + " RWF)";
+                depositAccountCombo.getItems().add(label);
+                withdrawAccountCombo.getItems().add(label);
+                transferAccountCombo.getItems().add(label);
+            }
         }
-        if (!myAccounts.isEmpty()) {
+
+        if (!walletAccounts.isEmpty()) {
             depositAccountCombo.getSelectionModel().selectFirst();
             withdrawAccountCombo.getSelectionModel().selectFirst();
             transferAccountCombo.getSelectionModel().selectFirst();
         }
     }
 
-    // ── Tab switching ─────────────────────────────────────────────────────────
-
     @FXML private void switchToDeposit() {
-        depositForm.setVisible(true);  depositForm.setManaged(true);
+        depositForm.setVisible(true);   depositForm.setManaged(true);
         withdrawForm.setVisible(false); withdrawForm.setManaged(false);
         transferForm.setVisible(false); transferForm.setManaged(false);
-        styleActiveTab(tabDeposit);
+        styleTab(tabDeposit);
     }
 
     @FXML private void switchToWithdraw() {
         depositForm.setVisible(false);  depositForm.setManaged(false);
         withdrawForm.setVisible(true);  withdrawForm.setManaged(true);
         transferForm.setVisible(false); transferForm.setManaged(false);
-        styleActiveTab(tabWithdraw);
+        styleTab(tabWithdraw);
     }
 
     @FXML private void switchToTransfer() {
         depositForm.setVisible(false);  depositForm.setManaged(false);
         withdrawForm.setVisible(false); withdrawForm.setManaged(false);
         transferForm.setVisible(true);  transferForm.setManaged(true);
-        styleActiveTab(tabTransfer);
+        styleTab(tabTransfer);
     }
 
-    private void styleActiveTab(Button active) {
-        String activeStyle  = "-fx-background-color:#1E8E3E;-fx-text-fill:white;-fx-font-weight:bold;-fx-padding:12 28;-fx-cursor:hand;";
-        String inactiveStyle = "-fx-background-color:#F9FAFB;-fx-text-fill:#6B7280;-fx-font-weight:bold;-fx-padding:12 28;-fx-cursor:hand;";
-        tabDeposit.setStyle(inactiveStyle  + "-fx-background-radius:10 0 0 10;");
-        tabWithdraw.setStyle(inactiveStyle + "-fx-background-radius:0;");
-        tabTransfer.setStyle(inactiveStyle + "-fx-background-radius:0 10 10 0;");
-        if (active == tabDeposit)  tabDeposit.setStyle(activeStyle  + "-fx-background-radius:10 0 0 10;");
-        if (active == tabWithdraw) tabWithdraw.setStyle(activeStyle + "-fx-background-radius:0;");
-        if (active == tabTransfer) tabTransfer.setStyle(activeStyle + "-fx-background-radius:0 10 10 0;");
+    private void styleTab(Button active) {
+        String on  = "-fx-background-color:#005B2A;-fx-text-fill:white;-fx-font-weight:bold;-fx-padding:12 24;-fx-cursor:hand;";
+        String off = "-fx-background-color:#F5F5F5;-fx-text-fill:#4B4B4B;-fx-font-weight:bold;-fx-padding:12 24;-fx-cursor:hand;";
+        tabDeposit.setStyle(off  + "-fx-background-radius:10 0 0 10;");
+        tabWithdraw.setStyle(off + "-fx-background-radius:0;");
+        tabTransfer.setStyle(off + "-fx-background-radius:0 10 10 0;");
+        if (active == tabDeposit)  tabDeposit.setStyle(on  + "-fx-background-radius:10 0 0 10;");
+        if (active == tabWithdraw) tabWithdraw.setStyle(on + "-fx-background-radius:0;");
+        if (active == tabTransfer) tabTransfer.setStyle(on + "-fx-background-radius:0 10 10 0;");
     }
-
-    // ── Deposit ───────────────────────────────────────────────────────────────
 
     @FXML
     private void handleDeposit() {
+        if (walletAccounts.isEmpty()) {
+            showMsg(depositMsg, "You have no Main Wallet. Create one in My Accounts.", false);
+            return;
+        }
         int idx = depositAccountCombo.getSelectionModel().getSelectedIndex();
-        if (idx < 0) { showMsg(depositMsg, "Please select an account.", false); return; }
+        if (idx < 0) { showMsg(depositMsg, "Please select a wallet.", false); return; }
 
         double amount = parseAmount(depositAmount, depositMsg);
         if (amount <= 0) return;
 
-        String pin = depositPin.getText().trim();
-        if (!validatePin(pin, depositMsg)) return;
+        if (!validatePin(depositPin.getText().trim(), depositMsg)) return;
 
         String ref    = "DEP-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
-        String result = transactionService.deposit(myAccounts.get(idx).getId(), amount, ref);
-        showMsg(depositMsg, result, result.startsWith("SUCCESS"));
-        if (result.startsWith("SUCCESS")) { depositAmount.clear(); depositPin.clear(); loadMyAccounts(); }
+        String result = transactionService.deposit(walletAccounts.get(idx).getId(), amount, ref);
+        showMsg(depositMsg, result.startsWith("SUCCESS")
+            ? "Deposit successful. " + String.format("%.2f", amount) + " RWF added. Ref: " + ref
+            : result, result.startsWith("SUCCESS"));
+        if (result.startsWith("SUCCESS")) {
+            depositAmount.clear(); depositPin.clear(); loadWalletAccounts();
+        }
     }
-
-    // ── Withdraw ──────────────────────────────────────────────────────────────
 
     @FXML
     private void handleWithdraw() {
+        if (walletAccounts.isEmpty()) {
+            showMsg(withdrawMsg, "You have no Main Wallet.", false);
+            return;
+        }
         int idx = withdrawAccountCombo.getSelectionModel().getSelectedIndex();
-        if (idx < 0) { showMsg(withdrawMsg, "Please select an account.", false); return; }
+        if (idx < 0) { showMsg(withdrawMsg, "Please select a wallet.", false); return; }
 
         double amount = parseAmount(withdrawAmount, withdrawMsg);
         if (amount <= 0) return;
 
-        String pin = withdrawPin.getText().trim();
-        if (!validatePin(pin, withdrawMsg)) return;
+        if (!validatePin(withdrawPin.getText().trim(), withdrawMsg)) return;
 
         String ref    = "WIT-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
-        String result = transactionService.withdraw(myAccounts.get(idx).getId(), amount, ref);
-        showMsg(withdrawMsg, result, result.startsWith("SUCCESS"));
-        if (result.startsWith("SUCCESS")) { withdrawAmount.clear(); withdrawPin.clear(); loadMyAccounts(); }
+        String result = transactionService.withdraw(walletAccounts.get(idx).getId(), amount, ref);
+        showMsg(withdrawMsg, result.startsWith("SUCCESS")
+            ? "Withdrawal successful. " + String.format("%.2f", amount) + " RWF withdrawn. Ref: " + ref
+            : result, result.startsWith("SUCCESS"));
+        if (result.startsWith("SUCCESS")) {
+            withdrawAmount.clear(); withdrawPin.clear(); loadWalletAccounts();
+        }
     }
-
-    // ── Transfer ──────────────────────────────────────────────────────────────
 
     @FXML
     private void handleTransfer() {
+        if (walletAccounts.isEmpty()) {
+            showMsg(transferMsg, "You need a Main Wallet to send money.", false);
+            return;
+        }
         int idx = transferAccountCombo.getSelectionModel().getSelectedIndex();
-        if (idx < 0) { showMsg(transferMsg, "Please select your account.", false); return; }
+        if (idx < 0) { showMsg(transferMsg, "Please select your wallet.", false); return; }
 
         String phone = receiverPhone.getText().trim();
         if (phone.isEmpty()) { showMsg(transferMsg, "Please enter receiver phone number.", false); return; }
+
+        if (phone.equals(Session.getCustomer().getPhoneNumber())) {
+            showMsg(transferMsg, "You cannot send money to yourself. Use the Savings screen to move between your accounts.", false);
+            return;
+        }
 
         Optional<Customer> receiverCustomer = customerDAO.findByPhone(phone);
         if (receiverCustomer.isEmpty()) { showMsg(transferMsg, "Receiver not found.", false); return; }
 
         List<Account> receiverAccounts = accountService.getCustomerAccounts(receiverCustomer.get().getId());
-        Optional<Account> receiverWallet = receiverAccounts.stream()
-            .filter(a -> "WALLET".equals(a.getAccountType())).findFirst();
-        if (receiverWallet.isEmpty()) { showMsg(transferMsg, "Receiver has no wallet account.", false); return; }
+        Account receiverWallet = null;
+        for (Account a : receiverAccounts) {
+            if ("WALLET".equals(a.getAccountType())) { receiverWallet = a; break; }
+        }
+        if (receiverWallet == null) { showMsg(transferMsg, "Receiver has no wallet account.", false); return; }
 
         double amount = parseAmount(transferAmount, transferMsg);
         if (amount <= 0) return;
 
-        String pin = transferPin.getText().trim();
-        if (!validatePin(pin, transferMsg)) return;
+        if (!validatePin(transferPin.getText().trim(), transferMsg)) return;
 
-        String ref    = "TRF-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
-        String result = transactionService.transfer(
-            myAccounts.get(idx).getId(), receiverWallet.get().getId(), amount, ref);
-        showMsg(transferMsg, result, result.startsWith("SUCCESS"));
+        int senderAccountId   = walletAccounts.get(idx).getId();
+        int receiverAccountId = receiverWallet.getId();
+        String ref = "TRF-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
+
+        String result = transactionService.transfer(senderAccountId, receiverAccountId, amount, ref);
+
+        if (result.startsWith("RETRY_DETECTED")) {
+            String[] parts = result.split("\\|");
+            String existingRef    = parts.length > 1 ? parts[1] : "N/A";
+            String existingAmount = parts.length > 2 ? parts[2] : "N/A";
+            String existingStatus = parts.length > 3 ? parts[3] : "N/A";
+
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Transaction Already Sent");
+            alert.setHeaderText("A similar transaction was recently completed.");
+            alert.setContentText(
+                "Transaction Reference: " + existingRef + "\n" +
+                "Amount: " + existingAmount + " RWF\n" +
+                "Status: " + existingStatus + "\n\n" +
+                "This looks like a duplicate. Do you want to send again?"
+            );
+            ButtonType sendAgainBtn = new ButtonType("Yes, Send Again");
+            ButtonType cancelBtn    = new ButtonType("No, Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
+            alert.getButtonTypes().setAll(sendAgainBtn, cancelBtn);
+
+            Optional<ButtonType> choice = alert.showAndWait();
+            if (choice.isPresent() && choice.get() == sendAgainBtn) {
+                String newRef = "TRF-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
+                String newResult = transactionService.proceedDuplicateTransfer(senderAccountId, receiverAccountId, amount, newRef);
+                if (newResult.startsWith("SUCCESS")) {
+                    showTransferSuccess(amount, newRef);
+                    transferAmount.clear(); transferPin.clear(); receiverPhone.clear();
+                    receiverNameLabel.setText(""); loadWalletAccounts();
+                } else {
+                    showMsg(transferMsg, newResult, false);
+                }
+            } else {
+                showMsg(transferMsg, "Transfer cancelled. Your money was not sent.", false);
+            }
+            return;
+        }
+
+        if (result.startsWith("DUPLICATE")) {
+            showMsg(transferMsg, "This transaction was already processed. Same reference ID cannot be used twice.", false);
+            return;
+        }
+
         if (result.startsWith("SUCCESS")) {
+            showTransferSuccess(amount, ref);
             transferAmount.clear(); transferPin.clear(); receiverPhone.clear();
-            receiverNameLabel.setText(""); loadMyAccounts();
+            receiverNameLabel.setText(""); loadWalletAccounts();
+        } else {
+            showMsg(transferMsg, result, false);
         }
     }
 
-    // ── Helpers ───────────────────────────────────────────────────────────────
+    private void showTransferSuccess(double amount, String ref) {
+        showMsg(transferMsg, "Money sent successfully. " + String.format("%.2f", amount) + " RWF transferred.", true);
+        refIdLabel.setText(ref);
+        refIdBox.setVisible(true);
+        refIdBox.setManaged(true);
+    }
 
     private boolean validatePin(String pin, Label msgLabel) {
         if (pin.isEmpty()) { showMsg(msgLabel, "Please enter your PIN.", false); return false; }
@@ -218,8 +292,8 @@ public class TransferController implements Initializable {
 
     private void showMsg(Label label, String msg, boolean success) {
         label.setStyle(success
-            ? "-fx-text-fill:#1E8E3E;-fx-font-size:12px;"
-            : "-fx-text-fill:#DC2626;-fx-font-size:12px;");
+            ? "-fx-text-fill:#005B2A;-fx-font-size:12px;"
+            : "-fx-text-fill:#C62828;-fx-font-size:12px;");
         label.setText(msg);
     }
 }

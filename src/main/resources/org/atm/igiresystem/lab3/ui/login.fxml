@@ -20,8 +20,8 @@
         <VBox styleClass="login-card" spacing="0" maxWidth="360" minWidth="320">
 
             <VBox fx:id="phoneStep" spacing="16">
-                <Label text="Enter your phone number" style="-fx-font-size:16px;-fx-font-weight:bold;-fx-text-fill:#2C2C2C;"/>
-                <Label text="We'll verify your identity with your PIN" styleClass="lbl-hint"/>
+                <Label text="Enter your phone number" style="-fx-font-size:16px;-fx-font-weight:bold;-fx-text-fill:#1A1A1A;"/>
+                <Label text="We'll verify your identity with your PIN" style="-fx-text-fill:#6B7280;-fx-font-size:12px;"/>
 
                 <VBox spacing="6">
                     <Label text="PHONE NUMBER" styleClass="lbl-field"/>
@@ -36,7 +36,7 @@
                 <Separator/>
 
                 <HBox alignment="CENTER" spacing="6">
-                    <Label text="New to IgirePay?" styleClass="lbl-hint"/>
+                    <Label text="New to IgirePay?" style="-fx-text-fill:#6B7280;-fx-font-size:12px;"/>
                     <Button text="Register" styleClass="btn-ghost" onAction="#handleRegister"/>
                 </HBox>
             </VBox>
@@ -47,8 +47,8 @@
                 </HBox>
 
                 <VBox alignment="CENTER" spacing="4">
-                    <Label fx:id="greetingLabel" text="Welcome back!" style="-fx-font-size:16px;-fx-font-weight:bold;-fx-text-fill:#2C2C2C;"/>
-                    <Label fx:id="phoneDisplayLabel" text="" styleClass="lbl-hint"/>
+                    <Label fx:id="greetingLabel" text="Welcome back!" style="-fx-font-size:16px;-fx-font-weight:bold;-fx-text-fill:#1A1A1A;"/>
+                    <Label fx:id="phoneDisplayLabel" text="" style="-fx-text-fill:#6B7280;-fx-font-size:12px;"/>
                 </VBox>
 
                 <VBox spacing="6" alignment="CENTER">

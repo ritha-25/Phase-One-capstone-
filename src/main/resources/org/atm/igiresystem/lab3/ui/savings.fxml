@@ -9,10 +9,10 @@
       spacing="20">
 
     <HBox style="-fx-background-color:#FEF3C7;-fx-background-radius:10;-fx-padding:14 18;" spacing="10" alignment="CENTER_LEFT">
-        <Label text="⚠" style="-fx-font-size:16px;"/>
+        <Label text="🏦" style="-fx-font-size:16px;"/>
         <VBox spacing="2">
-            <Label text="IgirePay Savings" style="-fx-font-weight:bold;-fx-text-fill:#92400E;-fx-font-size:13px;"/>
-            <Label text="Savings work like MoKash. Transfer from your Main Wallet to save. Withdrawals return to your wallet."
+            <Label text="How Savings Works" style="-fx-font-weight:bold;-fx-text-fill:#92400E;-fx-font-size:13px;"/>
+            <Label text="Send money from your Main Wallet to Savings. Withdraw back to wallet anytime. No fees for internal transfers."
                    style="-fx-text-fill:#92400E;-fx-font-size:11px;" wrapText="true"/>
         </VBox>
     </HBox>
@@ -20,17 +20,23 @@
     <VBox styleClass="balance-card" spacing="6" maxWidth="480">
         <Label text="SAVINGS BALANCE" styleClass="balance-card-label"/>
         <Label fx:id="balanceLabel" text="0.00 RWF" styleClass="balance-card-amount"/>
-        <Label fx:id="accountInfoLabel" text="" styleClass="balance-card-name"/>
+        <Label fx:id="accountInfoLabel" text="Savings Account" styleClass="balance-card-name"/>
     </VBox>
 
     <VBox styleClass="card" spacing="16" maxWidth="480">
-        <VBox spacing="6">
-            <Label text="SELECT SAVINGS ACCOUNT" styleClass="lbl-field"/>
-            <ComboBox fx:id="accountCombo" promptText="Choose savings account" maxWidth="Infinity"
-                      style="-fx-font-size:14px;" onAction="#onAccountSelected"/>
-        </VBox>
-
+        <Label text="Move Money" styleClass="lbl-screen-title"/>
         <Separator/>
+
+        <HBox spacing="12">
+            <VBox spacing="6" HBox.hgrow="ALWAYS">
+                <Label text="SAVINGS ACCOUNT" styleClass="lbl-field"/>
+                <ComboBox fx:id="accountCombo" maxWidth="Infinity" style="-fx-font-size:13px;" onAction="#onAccountSelected"/>
+            </VBox>
+            <VBox spacing="6" HBox.hgrow="ALWAYS">
+                <Label text="MAIN WALLET" styleClass="lbl-field"/>
+                <ComboBox fx:id="walletCombo" maxWidth="Infinity" style="-fx-font-size:13px;"/>
+            </VBox>
+        </HBox>
 
         <VBox spacing="6">
             <Label text="AMOUNT (RWF)" styleClass="lbl-field"/>
@@ -42,11 +48,13 @@
             <PasswordField fx:id="pinField" promptText="Enter your PIN" styleClass="input-field"/>
         </VBox>
 
-        <Label fx:id="messageLabel" styleClass="lbl-error" wrapText="true"/>
+        <Label fx:id="messageLabel" wrapText="true"/>
 
         <HBox spacing="12">
-            <Button text="Transfer to Savings" styleClass="btn-green" onAction="#handleDeposit" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
-            <Button text="Transfer to Wallet" styleClass="btn-orange" onAction="#handleWithdraw" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
+            <Button text="💳 → 🏦  Save Money" styleClass="btn-green" onAction="#handleSaveFromWallet"
+                    HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
+            <Button text="🏦 → 💳  Withdraw to Wallet" styleClass="btn-orange" onAction="#handleWithdrawToWallet"
+                    HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
         </HBox>
     </VBox>
 </VBox>

@@ -23,7 +23,6 @@
             <Button text="🏦   Savings"       styleClass="nav-btn" fx:id="btnSavings"  onAction="#showSavings"/>
             <Button text="📋   History"       styleClass="nav-btn" fx:id="btnHistory"  onAction="#showHistory"/>
             <Button text="💰   Loans"         styleClass="nav-btn" fx:id="btnLoans"    onAction="#showLoans"/>
-            <Button text="🔒   Duplicate Test" styleClass="nav-btn" fx:id="btnIdempotency" onAction="#showIdempotency"/>
             <Button text="👤   My Profile"    styleClass="nav-btn" fx:id="btnProfile"     onAction="#showProfile"/>
 
             <Label text="ADMIN" styleClass="sidebar-section" fx:id="adminSection" visible="false" managed="false"/>

@@ -6,16 +6,21 @@ import org.atm.igiresystem.lab1.models.WalletAccount;
 import org.atm.igiresystem.lab2.dao.AccountDAO;
 import org.atm.igiresystem.lab2.dao.ProcessedRequestDAO;
 import org.atm.igiresystem.lab2.dao.TransactionDAO;
+import org.atm.igiresystem.lab2.db.Connect;
 
-import java.util.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 public class TransactionService {
 
-    private final TransactionDAO       transactionDAO       = new TransactionDAO();
-    private final ProcessedRequestDAO  processedRequestDAO  = new ProcessedRequestDAO();
-    private final AccountDAO           accountDAO           = new AccountDAO();
+    private final TransactionDAO      transactionDAO      = new TransactionDAO();
+    private final ProcessedRequestDAO processedRequestDAO = new ProcessedRequestDAO();
+    private final AccountDAO          accountDAO          = new AccountDAO();
 
-    // In-memory Set for fast duplicate detection during session
     private final Set<String> sessionProcessedRefs = new HashSet<>();
 
     public String deposit(int accountId, double amount, String referenceId) {
@@ -32,7 +37,7 @@ public class TransactionService {
         accountDAO.updateBalance(accountId, account.getBalance());
         saveTransaction(new Transaction(0, referenceId, accountId, accountId, amount, "DEPOSIT", "SUCCESS"));
         markProcessed(referenceId);
-        return "SUCCESS: Deposited " + amount + " RWF.";
+        return "SUCCESS: Deposited " + String.format("%.2f", amount) + " RWF.";
     }
 
     public String withdraw(int accountId, double amount, String referenceId) {
@@ -46,36 +51,24 @@ public class TransactionService {
         boolean success = account.withdraw(amount, referenceId);
         String status = success ? "SUCCESS" : "FAILED";
 
-        if (success && account instanceof WalletAccount) {
+        if (success) {
             accountDAO.updateBalance(accountId, account.getBalance());
         }
 
         saveTransaction(new Transaction(0, referenceId, accountId, 0, amount, "WITHDRAW", status));
         if (success) markProcessed(referenceId);
-        return success ? "SUCCESS: Withdrawn " + amount + " RWF (fee: " + WalletAccount.WITHDRAWAL_FEE + " RWF)."
-                       : "FAILED: Insufficient balance.";
+
+        if (!success) return "FAILED: Insufficient balance.";
+        if (account instanceof WalletAccount) {
+            return "SUCCESS: Withdrawn " + String.format("%.2f", amount) + " RWF (fee: " + WalletAccount.WITHDRAWAL_FEE + " RWF).";
+        }
+        return "SUCCESS: Withdrawal request submitted. Funds available after 48 hours.";
     }
 
-    /**
-     * Transfer money between two wallet accounts.
-     * Detects similar recent transactions and prompts retry handling.
-     */
     public String transfer(int senderAccountId, int receiverAccountId, double amount, String referenceId) {
         if (isDuplicate(referenceId)) return "DUPLICATE: Transaction already processed.";
         if (amount <= 0) return "FAILED: Invalid amount.";
-        if (senderAccountId == receiverAccountId) return "FAILED: Cannot transfer to same account.";
-
-        // Retry detection — check for similar recent transactions
-        List<Transaction> similar = transactionDAO.findSimilarRecent(senderAccountId, receiverAccountId, amount);
-        if (!similar.isEmpty()) {
-            StringBuilder sb = new StringBuilder("RETRY_DETECTED: Possible existing transaction found:\n");
-            for (Transaction t : similar) {
-                sb.append("  → Transfer ").append(t.getAmount()).append(" RWF | Ref: ")
-                  .append(t.getReferenceId()).append(" | Status: ").append(t.getTransactionStatus()).append("\n");
-            }
-            sb.append("If this is a new transfer, it will proceed. Otherwise use the existing reference ID.");
-            System.out.println(sb);
-        }
+        if (senderAccountId == receiverAccountId) return "FAILED: Cannot transfer to the same account.";
 
         Optional<Account> senderOpt   = accountDAO.findById(senderAccountId);
         Optional<Account> receiverOpt = accountDAO.findById(receiverAccountId);
@@ -85,59 +78,82 @@ public class TransactionService {
         Account sender   = senderOpt.get();
         Account receiver = receiverOpt.get();
 
-        if (!(sender instanceof WalletAccount walletSender)) return "FAILED: Only wallet accounts can transfer.";
+        boolean sameCustomer = sender.getCustomerId() == receiver.getCustomerId();
 
-        double total = amount + WalletAccount.TRANSFER_FEE;
+        double fee = sameCustomer ? 0.0 : WalletAccount.TRANSFER_FEE;
+        double total = amount + fee;
+
         if (sender.getBalance() < total) {
             saveTransaction(new Transaction(0, referenceId, senderAccountId, receiverAccountId, amount, "TRANSFER", "FAILED"));
-            return "FAILED: Insufficient balance. Need " + total + " RWF (fee: " + WalletAccount.TRANSFER_FEE + " RWF).";
+            return "FAILED: Insufficient balance. Need " + String.format("%.2f", total) + " RWF" +
+                   (fee > 0 ? " (includes " + fee + " RWF fee)" : "") + ".";
         }
 
-        // Use JDBC transaction for atomicity
-        try (var conn = org.atm.igiresystem.lab2.db.Connect.getConnection()) {
+        if (!sameCustomer) {
+            List<Transaction> similar = transactionDAO.findSimilarRecent(senderAccountId, receiverAccountId, amount);
+            if (!similar.isEmpty()) {
+                Transaction existing = similar.get(0);
+                return "RETRY_DETECTED|" + existing.getReferenceId() + "|" + existing.getAmount() + "|" + existing.getTransactionStatus();
+            }
+        }
+
+        try {
+            Connection conn = Connect.getConnection();
             conn.setAutoCommit(false);
             try {
-                double newSenderBalance   = sender.getBalance() - total;
-                double newReceiverBalance = receiver.getBalance() + amount;
+                double newSenderBal   = sender.getBalance() - total;
+                double newReceiverBal = receiver.getBalance() + amount;
 
-                try (var ps1 = conn.prepareStatement("UPDATE accounts SET balance = ? WHERE id = ?");
-                     var ps2 = conn.prepareStatement("UPDATE accounts SET balance = ? WHERE id = ?");
-                     var ps3 = conn.prepareStatement(
-                         "INSERT INTO transactions (sender_account_id, receiver_account_id, reference_id, amount, transaction_type, transaction_status) VALUES (?, ?, ?, ?, ?, ?)");
-                     var ps4 = conn.prepareStatement(
-                         "INSERT INTO processed_requests (reference_id) VALUES (?) ON CONFLICT DO NOTHING")) {
+                PreparedStatement ps1 = conn.prepareStatement("UPDATE accounts SET balance = ? WHERE id = ?");
+                ps1.setDouble(1, newSenderBal);
+                ps1.setInt(2, senderAccountId);
+                ps1.executeUpdate();
+                ps1.close();
 
-                    ps1.setDouble(1, newSenderBalance);
-                    ps1.setInt(2, senderAccountId);
-                    ps1.executeUpdate();
+                PreparedStatement ps2 = conn.prepareStatement("UPDATE accounts SET balance = ? WHERE id = ?");
+                ps2.setDouble(1, newReceiverBal);
+                ps2.setInt(2, receiverAccountId);
+                ps2.executeUpdate();
+                ps2.close();
 
-                    ps2.setDouble(1, newReceiverBalance);
-                    ps2.setInt(2, receiverAccountId);
-                    ps2.executeUpdate();
+                PreparedStatement ps3 = conn.prepareStatement(
+                    "INSERT INTO transactions (sender_account_id, receiver_account_id, reference_id, amount, transaction_type, transaction_status) VALUES (?, ?, ?, ?, ?, ?)");
+                ps3.setInt(1, senderAccountId);
+                ps3.setInt(2, receiverAccountId);
+                ps3.setString(3, referenceId);
+                ps3.setDouble(4, amount);
+                ps3.setString(5, "TRANSFER");
+                ps3.setString(6, "SUCCESS");
+                ps3.executeUpdate();
+                ps3.close();
 
-                    ps3.setInt(1, senderAccountId);
-                    ps3.setInt(2, receiverAccountId);
-                    ps3.setString(3, referenceId);
-                    ps3.setDouble(4, amount);
-                    ps3.setString(5, "TRANSFER");
-                    ps3.setString(6, "SUCCESS");
-                    ps3.executeUpdate();
-
-                    ps4.setString(1, referenceId);
-                    ps4.executeUpdate();
-                }
+                PreparedStatement ps4 = conn.prepareStatement(
+                    "INSERT INTO processed_requests (reference_id) VALUES (?) ON CONFLICT DO NOTHING");
+                ps4.setString(1, referenceId);
+                ps4.executeUpdate();
+                ps4.close();
 
                 conn.commit();
+                conn.close();
                 sessionProcessedRefs.add(referenceId);
-                return "SUCCESS: Transferred " + amount + " RWF to account #" + receiverAccountId +
-                       " (fee: " + WalletAccount.TRANSFER_FEE + " RWF).";
+
+                String msg = "SUCCESS: Transferred " + String.format("%.2f", amount) + " RWF";
+                if (fee > 0) msg += " (fee: " + fee + " RWF)";
+                msg += ".";
+                return msg;
+
             } catch (Exception ex) {
                 conn.rollback();
-                return "FAILED: Transfer rolled back. " + ex.getMessage();
+                conn.close();
+                return "FAILED: Transfer error. " + ex.getMessage();
             }
         } catch (Exception e) {
             return "FAILED: Database error. " + e.getMessage();
         }
+    }
+
+    public String proceedDuplicateTransfer(int senderAccountId, int receiverAccountId, double amount, String newReferenceId) {
+        return transfer(senderAccountId, receiverAccountId, amount, newReferenceId);
     }
 
     public List<Transaction> getTransactionHistory(int accountId) {
@@ -146,6 +162,14 @@ public class TransactionService {
 
     public List<Transaction> getAllTransactions() {
         return transactionDAO.findAll();
+    }
+
+    public Optional<Transaction> findByReference(String referenceId) {
+        List<Transaction> all = transactionDAO.findAll();
+        for (Transaction t : all) {
+            if (referenceId.equals(t.getReferenceId())) return Optional.of(t);
+        }
+        return Optional.empty();
     }
 
     private boolean isDuplicate(String referenceId) {

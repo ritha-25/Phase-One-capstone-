@@ -4,7 +4,31 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="93fd3485-238d-4b73-8d5a-a8a2c9f80fd8" name="Changes" comment="" />
+    <list default="true" id="93fd3485-238d-4b73-8d5a-a8a2c9f80fd8" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/module-info.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/module-info.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/atm/igiresystem/lab1/models/Customer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/atm/igiresystem/lab1/models/Customer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/atm/igiresystem/lab2/dao/CustomerDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/atm/igiresystem/lab2/dao/CustomerDAO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/atm/igiresystem/lab3/console/ConsoleApp.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/atm/igiresystem/lab3/services/AccountService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/atm/igiresystem/lab3/services/AccountService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/atm/igiresystem/lab3/services/LoanService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/atm/igiresystem/lab3/services/LoanService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/atm/igiresystem/lab3/services/ReportService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/atm/igiresystem/lab3/services/ReportService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/atm/igiresystem/lab3/services/TransactionService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/atm/igiresystem/lab3/services/TransactionService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/atm/igiresystem/lab3/ui/app/IgirePayApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/atm/igiresystem/lab3/ui/app/IgirePayApp.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/atm/igiresystem/lab3/ui/controllers/AccountsController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/atm/igiresystem/lab3/ui/controllers/AccountsController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/atm/igiresystem/lab3/ui/controllers/AdminController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/atm/igiresystem/lab3/ui/controllers/AdminController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/atm/igiresystem/lab3/ui/controllers/DashboardController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/atm/igiresystem/lab3/ui/controllers/DashboardController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/atm/igiresystem/lab3/ui/controllers/LoanController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/atm/igiresystem/lab3/ui/controllers/LoanController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/atm/igiresystem/lab3/ui/controllers/SavingsController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/atm/igiresystem/lab3/ui/controllers/SavingsController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/atm/igiresystem/lab3/ui/controllers/TransferController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/atm/igiresystem/lab3/ui/controllers/TransferController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/org/atm/igiresystem/lab3/ui/dashboard.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/org/atm/igiresystem/lab3/ui/dashboard.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/org/atm/igiresystem/lab3/ui/login.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/org/atm/igiresystem/lab3/ui/login.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/org/atm/igiresystem/lab3/ui/savings.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/org/atm/igiresystem/lab3/ui/savings.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/org/atm/igiresystem/lab3/ui/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/org/atm/igiresystem/lab3/ui/styles.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/org/atm/igiresystem/lab3/ui/transfer.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/org/atm/igiresystem/lab3/ui/transfer.fxml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -34,21 +58,25 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Application.ConsoleApp.executor": "Run",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
-    "codeWithMe.voiceChat.enabledByDefault": "false",
-    "git-widget-placeholder": "lab1",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/user/IdeaProjects/IgireSystem",
-    "nodejs_package_manager_path": "npm"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Application.ConsoleApp.executor&quot;: &quot;Run&quot;,
+    &quot;Application.Launcher.executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;codeWithMe.voiceChat.enabledByDefault&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/user/IdeaProjects/IgireSystem&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;SDKs&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.5367816&quot;
   }
-}]]></component>
+}</component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
       <changelist id="93fd3485-238d-4b73-8d5a-a8a2c9f80fd8" name="Changes" comment="" />

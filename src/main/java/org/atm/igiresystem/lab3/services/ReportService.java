@@ -7,8 +7,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class ReportService {
 
@@ -39,25 +39,39 @@ public class ReportService {
             }
             System.out.println("Report exported to: " + filePath);
         } catch (IOException e) {
-            System.err.println("Export failed: " + e.getMessage());
+            System.out.println("Export failed: " + e.getMessage());
         }
     }
 
-    public void printDailySummary() {
+    public String getDailySummaryText() {
         List<Transaction> all = transactionDAO.findAll();
         String today = LocalDate.now().format(DateTimeFormatter.ISO_DATE);
-        List<Transaction> todayTx = all.stream()
-            .filter(tx -> tx.getTimestamp().toLocalDate().toString().equals(today))
-            .collect(Collectors.toList());
 
-        double totalDeposits  = todayTx.stream().filter(t -> "DEPOSIT".equals(t.getTransactionType())).mapToDouble(Transaction::getAmount).sum();
-        double totalWithdraws = todayTx.stream().filter(t -> "WITHDRAW".equals(t.getTransactionType())).mapToDouble(Transaction::getAmount).sum();
-        double totalTransfers = todayTx.stream().filter(t -> "TRANSFER".equals(t.getTransactionType())).mapToDouble(Transaction::getAmount).sum();
+        List<Transaction> todayTx = new ArrayList<>();
+        for (Transaction tx : all) {
+            if (tx.getTimestamp() != null && tx.getTimestamp().toLocalDate().toString().equals(today)) {
+                todayTx.add(tx);
+            }
+        }
 
-        System.out.println("=== Daily Summary: " + today + " ===");
-        System.out.println("Total Transactions : " + todayTx.size());
-        System.out.println("Total Deposits     : " + totalDeposits + " RWF");
-        System.out.println("Total Withdrawals  : " + totalWithdraws + " RWF");
-        System.out.println("Total Transfers    : " + totalTransfers + " RWF");
+        double totalDeposits  = 0;
+        double totalWithdraws = 0;
+        double totalTransfers = 0;
+
+        for (Transaction t : todayTx) {
+            if ("DEPOSIT".equals(t.getTransactionType()))  totalDeposits  += t.getAmount();
+            if ("WITHDRAW".equals(t.getTransactionType())) totalWithdraws += t.getAmount();
+            if ("TRANSFER".equals(t.getTransactionType())) totalTransfers += t.getAmount();
+        }
+
+        return "Daily Summary — " + today + "\n" +
+               "Total Transactions : " + todayTx.size() + "\n" +
+               "Total Deposits     : " + String.format("%.2f", totalDeposits)  + " RWF\n" +
+               "Total Withdrawals  : " + String.format("%.2f", totalWithdraws) + " RWF\n" +
+               "Total Transfers    : " + String.format("%.2f", totalTransfers) + " RWF";
+    }
+
+    public void printDailySummary() {
+        System.out.println(getDailySummaryText());
     }
 }

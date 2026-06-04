@@ -15,7 +15,6 @@ module org.atm.igiresystem {
     exports org.atm.igiresystem.lab2.db;
     exports org.atm.igiresystem.lab2.dao;
     exports org.atm.igiresystem.lab3.services;
-    exports org.atm.igiresystem.lab3.console;
     exports org.atm.igiresystem.lab3.ui.controllers;
     exports org.atm.igiresystem.lab3.ui.app;
 }
